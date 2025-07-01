@@ -14,17 +14,25 @@ public class PerfumeService {
     @Autowired
     private PerfumeRepository perfumeRepository;
 
+
     public List<Perfume> obtenerTodos() {
         return perfumeRepository.findAll();
     }
+
 
     public Optional<Perfume> obtenerPorId(Long id) {
         return perfumeRepository.findById(id);
     }
 
+
+
     public Perfume agregarPerfume(Perfume perfume) {
+        if (perfume.getNombre() == null || perfume.getPrecio() <= 0 || perfume.getStock() < 0) {
+            throw new IllegalArgumentException("Datos del perfume inválidos");
+        }
         return perfumeRepository.save(perfume);
     }
+
 
     public boolean eliminarPerfume(Long id) {
         if (perfumeRepository.existsById(id)) {
@@ -34,6 +42,7 @@ public class PerfumeService {
         return false;
     }
 
+
     public boolean comprarPerfume(Long id, int cantidad) {
         Optional<Perfume> opt = perfumeRepository.findById(id);
         if (opt.isPresent()) {
@@ -42,8 +51,10 @@ public class PerfumeService {
                 p.setStock(p.getStock() - cantidad);
                 perfumeRepository.save(p);
                 return true;
+            } else {
+                throw new RuntimeException("Stock insuficiente para realizar la compra.");
             }
         }
-        return false;
+        throw new RuntimeException("Perfume no encontrado con id: " + id);
     }
 }

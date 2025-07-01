@@ -17,11 +17,11 @@ public class UsuarioLoginController {
 
     @PostMapping("/registrar")
 
-    public ResponseEntity<UserLoginRequest> registrar(@RequestBody UserLoginRequest usuario) {
+    public ResponseEntity <UserLoginRequest> registrar(@RequestBody UserLoginRequest usuario) {
         try {
             UserLoginRequest usuarioRegistrado = usuarioService.registrarUsuario(usuario.getEmail(), usuario.getContraseña(), usuario.getNombre(), usuario.getApellido());
             return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRegistrado);
-        } catch (Exception e) {
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 

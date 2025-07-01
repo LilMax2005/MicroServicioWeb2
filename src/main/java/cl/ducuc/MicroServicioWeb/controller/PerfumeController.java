@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
+import static org.springframework.http.ResponseEntity.*;
+
 @RestController
 @RequestMapping("/perfumes")
 public class PerfumeController {
@@ -22,9 +24,9 @@ public class PerfumeController {
     public ResponseEntity<List<Perfume>> obtenerTodos() {
         try {
             List<Perfume> perfumes = perfumeService.obtenerTodos();
-            return ResponseEntity.ok(perfumes);
+            return ok(perfumes);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -33,19 +35,22 @@ public class PerfumeController {
         try {
             return perfumeService.obtenerPorId(id)
                     .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+                    .orElseGet(() -> notFound().build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
+
 
     @PostMapping
     public ResponseEntity<Perfume> agregarPerfume(@Valid @RequestBody Perfume perfume) {
         try {
             Perfume nuevoPerfume = perfumeService.agregarPerfume(perfume);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPerfume);
+            return status(HttpStatus.CREATED).body(nuevoPerfume);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -54,12 +59,12 @@ public class PerfumeController {
         try {
             boolean eliminado = perfumeService.eliminarPerfume(id);
             if (eliminado) {
-                return ResponseEntity.noContent().build();
+                return noContent().build();
             } else {
-                return ResponseEntity.notFound().build();
+                return notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -67,17 +72,17 @@ public class PerfumeController {
     public ResponseEntity<String> comprarPerfume(@PathVariable Long id, @RequestParam int cantidad) {
         try {
             if (cantidad <= 0) {
-                return ResponseEntity.badRequest().body("La cantidad debe ser mayor a cero.");
+                return badRequest().body("La cantidad debe ser mayor a cero.");
             }
 
             boolean comprado = perfumeService.comprarPerfume(id, cantidad);
             if (comprado) {
-                return ResponseEntity.ok("Compra realizada exitosamente.");
+                return ok("Compra realizada exitosamente.");
             } else {
-                return ResponseEntity.badRequest().body("No hay suficiente stock o perfume no existente.");
+                return badRequest().body("No hay suficiente stock o perfume no existente.");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

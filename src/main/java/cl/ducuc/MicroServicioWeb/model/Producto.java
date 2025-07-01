@@ -4,24 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 
 @Entity
-public class Perfume {
+public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
     private String nombre;
-
-    @Column(nullable = false)
     private double precio;
+    private String descripcion;
 
-    @Column(nullable = false)
-    private int stock;
-
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -46,11 +41,11 @@ public class Perfume {
         this.precio = precio;
     }
 
-    public int getStock() {
-        return stock;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
